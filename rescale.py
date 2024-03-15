@@ -10,6 +10,11 @@ from utils import (
         load_tsv, save_tsv)
 
 
+""" 
+rescale images, masks, locs, and radius 
+from raw to scaled pixel size
+"""
+
 def get_image_filename(prefix):
     file_exists = False
     for suffix in ['.jpg', '.png', '.tiff']:
