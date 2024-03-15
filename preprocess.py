@@ -6,6 +6,9 @@ from einops import reduce
 from utils import load_image, save_image, load_mask
 from image import crop_image
 
+"""
+adjust margins of images and masks to be divisible by 256
+"""
 
 def adjust_margins(img, pad, pad_value=None):
     extent = np.stack([[0, 0], img.shape[:2]]).T
