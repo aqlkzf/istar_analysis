@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 import matplotlib
 import matplotlib.pyplot as plt
-
+from pytorch_lightning.callbacks import ModelCheckpoint
 from utils import load_pickle, save_pickle
 
 
@@ -76,7 +76,7 @@ def train_model(
         model = model_class(**model_kwargs)
     dataloader = DataLoader(
             dataset, batch_size=batch_size,
-            shuffle=True)
+            shuffle=True, num_workers=48, pin_memory=True)
     tracker = MetricTracker()
     device_accelerator_dict = {
             'cuda': 'gpu',
@@ -87,8 +87,8 @@ def train_model(
             callbacks=[tracker],
             deterministic=True,
             accelerator=accelerator,
-            devices=1,
-            logger=False,
+            devices=[1,2,3,4,5,6],
+            logger=True,
             enable_checkpointing=False,
             enable_progress_bar=True)
     model.train()

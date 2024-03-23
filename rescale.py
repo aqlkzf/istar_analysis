@@ -17,7 +17,7 @@ from raw to scaled pixel size
 
 def get_image_filename(prefix):
     file_exists = False
-    for suffix in ['.jpg', '.png', '.tiff']:
+    for suffix in ['.jpg', '.png', '.tif']:
         filename = prefix + suffix
         if os.path.exists(filename):
             file_exists = True
@@ -70,7 +70,7 @@ def main():
     scale = pixel_size_raw / pixel_size
 
     if args.image:
-        img = load_image(get_image_filename(args.prefix+'he-raw'))
+        img = load_image(get_image_filename(args.prefix+'Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome'))
         img = img.astype(np.float32)
         print(f'Rescaling image (scale: {scale:.3f})...')
         t0 = time()

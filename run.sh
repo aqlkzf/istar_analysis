@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-prefix=$1  # e.g. data/demo/
+prefix='/lustre/project/Stat/s1155202250/fastfolder/code/st/istar/data/10xdata/Xenium_FFPE_Human_Breast_Cancer_Rep1/istar_/'  # e.g. data/demo/
 
-device="cuda"  # "cuda" or "cpu"
+device="cuda:1"  # "cuda" or "cpu"
 pixel_size=0.5  # desired pixel size for the whole analysis
 n_genes=1000  # number of most variable genes to impute
 

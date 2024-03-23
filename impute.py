@@ -82,6 +82,8 @@ class ForwardSumModel(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, y_mean = batch
+        x= x.float()
+        y_mean = y_mean.float()
         y_pred = self.forward(x)
         y_mean_pred = y_pred.mean(-2)
         # TODO: try l1 loss
@@ -139,6 +141,41 @@ def get_disk(img, ij, radius):
     return patch
 
 
+# def get_patches_flat(img, locs, mask):
+#     shape = np.array(mask.shape)
+#     center = shape // 2
+#     r = np.stack([-center, shape-center], -1)  # offset
+#     x_list = []
+#     for s in locs:
+#         print(s)
+#         patch = img[
+#                 s[0]+r[0][0]:s[0]+r[0][1],
+#                 s[1]+r[1][0]:s[1]+r[1][1]]
+#         if mask.all():
+#             x = patch
+#         else:
+#             x = patch[mask]
+# def get_patches_flat(img, locs, mask):
+#     shape = np.array(mask.shape)
+#     center = shape // 2
+#     r = np.stack([-center, shape-center], -1)  # offset
+#     x_list = []
+#     for s in locs:
+#         print(s)
+#         s = np.array(s)
+#         s[0] = max(min(s[0], img.shape[0] - shape[0]), shape[0])
+#         s[1] = max(min(s[1], img.shape[1] - shape[1]), shape[1])
+#         patch = img[
+#                 s[0]+r[0][0]:s[0]+r[0][1],
+#                 s[1]+r[1][0]:s[1]+r[1][1]]
+#         if mask.all():
+#             x = patch
+#         else:
+#             x = patch[mask]
+
+#         x_list.append(x)
+#     x_list = np.stack(x_list)
+#     return x_list
 def get_patches_flat(img, locs, mask):
     shape = np.array(mask.shape)
     center = shape // 2
@@ -146,16 +183,46 @@ def get_patches_flat(img, locs, mask):
     x_list = []
     for s in locs:
         patch = img[
-                s[0]+r[0][0]:s[0]+r[0][1],
-                s[1]+r[1][0]:s[1]+r[1][1]]
+            max(s[0]+r[0][0], 0):min(s[0]+r[0][1], img.shape[0]),
+            max(s[1]+r[1][0], 0):min(s[1]+r[1][1], img.shape[1])
+        ]
+        # check patch shape the first two dimensions should be equal to shape
+        if patch.shape[:2] != mask.shape:
+            # print(s, patch.shape, shape)
+            patch = np.full((shape[0], shape[1],img.shape[2]), np.inf)
         if mask.all():
             x = patch
         else:
             x = patch[mask]
+            # print('after mask')
+            # print(x.shape)
+
         x_list.append(x)
     x_list = np.stack(x_list)
+    # prinx_list.shape)_list.shape)
     return x_list
 
+
+# def get_patches_flat(img, locs, mask):
+#     shape = np.array(mask.shape)
+#     center = shape // 2
+#     r = np.stack([-center, shape-center], -1)  # offset
+#     x_list = []
+#     for s in locs:
+#         # print(s)
+#         s = np.array(s)
+#         if any(s[i] + r[i][0] < 0 or s[i] + r[i][1] > img.shape[i] for i in range(2)):
+#             continue
+#         patch = img[
+#                 s[0]+r[0][0]:s[0]+r[0][1],
+#                 s[1]+r[1][0]:s[1]+r[1][1]]
+#         if mask.all():
+#             x = patch
+#         else:
+#             x = patch[mask]
+#         x_list.append(x)
+#     x_list = np.stack(x_list)
+#     return x_list
 
 def add_coords(embs):
     coords = np.stack(np.meshgrid(
@@ -407,5 +474,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # torch.multiprocessing.set_start_method('spawn')
+    torch.multiprocessing.set_start_method('spawn')
     main()
