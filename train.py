@@ -83,7 +83,7 @@ def train_model(
             'cpu': 'cpu'}
     accelerator = device_accelerator_dict[device]
     time_str = pltime.strftime("%m%d-%H%M%S")
-    logger = TensorBoardLogger("lightning_logs", name=f"{test_istar}_{time_str}")
+    logger = TensorBoardLogger("lightning_logs", name=f"test_istar_{time_str}")
     # 检查点回调，保存最好的模型
     checkpoint_callback = ModelCheckpoint(
         monitor="rmse",
