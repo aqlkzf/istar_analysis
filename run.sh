@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-prefix='/lustre/project/Stat/s1155202250/fastfolder/code/st/istar/data/10xdata/Xenium_FFPE_Human_Breast_Cancer_Rep1/istar_/'  # e.g. data/demo/
+prefix='data/demo/'  # e.g. data/demo/
 
 device="cuda:1"  # "cuda" or "cpu"
 pixel_size=0.5  # desired pixel size for the whole analysis

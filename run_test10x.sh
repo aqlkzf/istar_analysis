@@ -13,6 +13,7 @@ n_genes=313  # number of most variable genes to impute
 # python preprocess.py ${prefix} --image
 
 # # extract histology features
+python extract_features.py '/lustre/project/Stat/s1155202250/fastfolder/code/st/istar/data/10xdata/Xenium_FFPE_Human_Breast_Cancer_Rep1/istar_/' --device="cuda"
 # python extract_features.py ${prefix} --device=${device}
 # # If you want to retun model, you need to delete the existing results:
 # rm ${prefix}embeddings-hist-raw.pickle
@@ -38,7 +39,7 @@ n_genes=313  # number of most variable genes to impute
 # '/lustre/project/Stat/s1155202250/fastfolder/code/st/istar/data/10xdata/Xenium_FFPE_Human_Breast_Cancer_Rep1/istar_/' --epochs=400 --device=cuda:1
 
 # # train gene expression prediction model and predict at super-resolution
-python impute.py ${prefix} --epochs=400 --device=${device}  # train model from scratch
+# python impute.py ${prefix} --epochs=400 --device=${device}  # train model from scratch
 # # # If you want to retrain model, you need to delete the existing model:
 # # rm -r ${prefix}states
 
