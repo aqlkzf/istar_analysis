@@ -1,7 +1,7 @@
 import os
 from copy import deepcopy
 from time import time
-
+import time as pltime
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
@@ -10,7 +10,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from pytorch_lightning.callbacks import ModelCheckpoint
 from utils import load_pickle, save_pickle
-
+from pytorch_lightning.loggers import TensorBoardLogger
 
 matplotlib.use('Agg')
 
@@ -76,21 +76,32 @@ def train_model(
         model = model_class(**model_kwargs)
     dataloader = DataLoader(
             dataset, batch_size=batch_size,
-            shuffle=True, num_workers=48, pin_memory=True)
+            shuffle=True, num_workers=10, pin_memory=True)
     tracker = MetricTracker()
     device_accelerator_dict = {
             'cuda': 'gpu',
             'cpu': 'cpu'}
     accelerator = device_accelerator_dict[device]
+    time_str = pltime.strftime("%m%d-%H%M%S")
+    logger = TensorBoardLogger("lightning_logs", name=f"{test_istar}_{time_str}")
+    # 检查点回调，保存最好的模型
+    checkpoint_callback = ModelCheckpoint(
+        monitor="rmse",
+        save_top_k=30,
+        mode="min",
+        filename="{epoch}-{rmse:.2f}",
+    )
     trainer = pl.Trainer(
-            max_epochs=epochs,
-            callbacks=[tracker],
-            deterministic=True,
-            accelerator=accelerator,
-            devices=[1,2,3,4,5,6],
-            logger=True,
-            enable_checkpointing=False,
-            enable_progress_bar=True)
+        max_epochs=epochs,
+        callbacks=[tracker, checkpoint_callback],  # 将两个回调放在一起
+        deterministic=True,
+        accelerator=accelerator,
+        strategy='ddp',
+        devices=[1,2,3],
+        logger=logger,
+        enable_checkpointing=True,
+        enable_progress_bar=True)
+
     model.train()
     t0 = time()
     trainer.fit(model=model, train_dataloaders=dataloader)

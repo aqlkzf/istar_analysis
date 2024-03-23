@@ -445,7 +445,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('prefix', type=str)
     parser.add_argument('--epochs', type=int, default=None)  # e.g. 400
-    parser.add_argument('--n-states', type=int, default=5)
+    parser.add_argument('--n-states', type=int, default=1)
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--n-jobs', type=int, default=1)
     parser.add_argument('--load-saved', action='store_true')
